@@ -31,7 +31,14 @@ public class UserServiceImpl implements UserService {
         return UserMapper.userToUserDto(createdUser);
     }
 
-    private void validateNewUserRequestDto(NewUserRequestDto newUserRequestDto) {
+    @Override
+    public UserDto getUserById(int userId) {
+        log.info("UserServiceImpl:getUserById(): запрос на получение пользователя с id {}", userId);
+        return UserMapper.userToUserDto(userStorage.getUserById(userId));
+    }
+
+    @Override
+    public void validateNewUserRequestDto(NewUserRequestDto newUserRequestDto) {
         if (newUserRequestDto.getName() == null || newUserRequestDto.getName().isBlank()) {
             throw new UserNotValidException("Имя пользователя не может быть пустым или null");
         }

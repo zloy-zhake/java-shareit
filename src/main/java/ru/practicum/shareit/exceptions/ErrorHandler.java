@@ -19,4 +19,10 @@ public class ErrorHandler {
     public ErrorResponse handleUserNotValidException(UserNotValidException e) {
         return new ErrorResponse("Ошибка в данных о пользователе", e.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleNoSuchElementException(NoSuchElementException e) {
+        return new ErrorResponse("Данные отсутствуют", e.getMessage());
+    }
 }

@@ -6,4 +6,8 @@ import ru.practicum.shareit.user.dto.UserDto;
 public interface UserService {
 
     UserDto addUser(NewUserRequestDto newUserRequestDto);
+
+    UserDto getUserById(int userId);
+
+    void validateNewUserRequestDto(NewUserRequestDto newUserRequestDto);
 }
