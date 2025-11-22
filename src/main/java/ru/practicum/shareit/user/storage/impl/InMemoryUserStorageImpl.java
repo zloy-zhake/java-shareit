@@ -3,8 +3,6 @@ package ru.practicum.shareit.user.storage.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exceptions.DuplicatedDataException;
-import ru.practicum.shareit.user.dto.NewUserRequestDto;
-import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
 
@@ -20,10 +18,9 @@ public class InMemoryUserStorageImpl implements UserStorage {
     private int currentId = 0;
 
     @Override
-    public User addUser(NewUserRequestDto newUserRequestDto) {
-        log.info("InMemoryUserStorageImpl:addUser(): запрос на создание нового пользователя {}", newUserRequestDto);
-        checkIfUserExists(newUserRequestDto);
-        User newUser = UserMapper.newUserRequestDtoToUser(newUserRequestDto);
+    public User addUser(User newUser) {
+        log.info("InMemoryUserStorageImpl:addUser(): запрос на создание нового пользователя {}", newUser);
+        checkIfUserExists(newUser);
         int id = getNextId();
         newUser.setId(id);
         userMap.put(id, newUser);
@@ -42,18 +39,48 @@ public class InMemoryUserStorageImpl implements UserStorage {
     }
 
     @Override
-    public void checkIfUserExists(NewUserRequestDto newUserRequestDto) throws DuplicatedDataException {
+    public void checkIfUserExists(User newUser) throws DuplicatedDataException {
         for (User user : userMap.values()) {
-            if (newUserRequestDto.getName().equals(user.getName())) {
-                throw new DuplicatedDataException("Пользователь с именем " + newUserRequestDto.getName() + " уже имеется в базе данных");
+            if (newUser.getName().equals(user.getName())) {
+                throw new DuplicatedDataException("Пользователь с именем " + newUser.getName() + " уже имеется в базе данных");
             }
-            if (newUserRequestDto.getEmail().equals(user.getEmail()))
-                throw new DuplicatedDataException("Пользователь с email " + newUserRequestDto.getEmail() + " уже имеется в базе данных");
+            if (newUser.getEmail().equals(user.getEmail()))
+                throw new DuplicatedDataException("Пользователь с email " + newUser.getEmail() + " уже имеется в базе данных");
         }
+    }
+
+    @Override
+    public User updateUser(User updatedUser) {
+        if (emailUsedByOtherUser(updatedUser.getEmail(), updatedUser.getId())) {
+            throw new DuplicatedDataException("email " + updatedUser.getEmail() + " используется другим пользователем");
+        }
+        User userToUpdate = getUserById(updatedUser.getId());
+        userToUpdate.setName(updatedUser.getName());
+        userToUpdate.setEmail(updatedUser.getEmail());
+        return userToUpdate;
+    }
+
+    @Override
+    public void deleteUser(int userId) {
+        log.info("InMemoryUserStorageImpl:deleteUser(): запрос на удаление пользователя с id {}", userId);
+        userMap.remove(userId);
+        log.info("InMemoryUserStorageImpl:deleteUser(): пользователь с id {} удалён", userId);
     }
 
     private int getNextId() {
         currentId = currentId + 1;
         return currentId;
+    }
+
+    private boolean emailUsedByOtherUser(String emailToCheck, int userId) {
+        for (User user : userMap.values()) {
+            if (userId == user.getId()) {
+                continue;
+            }
+            if (emailToCheck.equals(user.getEmail())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
