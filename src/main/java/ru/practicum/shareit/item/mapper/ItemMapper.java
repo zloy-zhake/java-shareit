@@ -1,16 +1,27 @@
 package ru.practicum.shareit.item.mapper;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.NewItemRequestDto;
 import ru.practicum.shareit.item.model.Item;
 
 public class ItemMapper {
 
-    public static ItemDto toItemDto(Item item) {
+    public static ItemDto itemToItemDto(Item item) {
         ItemDto itemDto = new ItemDto();
-        itemDto.setName(itemDto.getName());
-        itemDto.setDescription(itemDto.getDescription());
-        itemDto.setAvailable(itemDto.isAvailable());
-        itemDto.setOwner(itemDto.getOwner());
+        itemDto.setName(item.getName());
+        itemDto.setDescription(item.getDescription());
+        itemDto.setAvailable(item.isAvailable());
+        itemDto.setOwner(item.getOwner());
         itemDto.setRequest(item.getRequest() != null ? item.getRequest() : null);
         return itemDto;
+    }
+
+    public static Item newItemRequestDtoToItem(NewItemRequestDto newItemRequestDto) {
+        Item item = new Item();
+        item.setName(newItemRequestDto.getName());
+        item.setDescription(newItemRequestDto.getDescription());
+        if (newItemRequestDto.getAvailable().isPresent()) {
+            item.setAvailable(newItemRequestDto.getAvailable().get());
+        }
+        return item;
     }
 }
