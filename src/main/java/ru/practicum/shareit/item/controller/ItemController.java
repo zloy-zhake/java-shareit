@@ -9,6 +9,8 @@ import ru.practicum.shareit.item.dto.NewItemRequestDto;
 import ru.practicum.shareit.item.dto.UpdateItemRequestDto;
 import ru.practicum.shareit.item.service.ItemService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
@@ -34,7 +36,39 @@ public class ItemController {
             @PathVariable int itemId,
             @RequestBody UpdateItemRequestDto updateItemRequestDto
     ) {
-        log.info("ItemController:updateItem(): запрос на обновление предмета {}", newItemRequestDto);
+        log.info(
+                "ItemController:updateItem(): запрос на обновление предмета ID={} от пользователя ID={}. Новые данные: {}",
+                itemId,
+                sharerUserId,
+                updateItemRequestDto
+        );
         return itemService.updateItem(sharerUserId, itemId, updateItemRequestDto);
+    }
+
+    @GetMapping("/{itemId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ItemDto getItemById(
+            @RequestHeader("X-Sharer-User-Id") int sharerUserId,
+            @PathVariable int itemId
+    ) {
+        log.info("ItemController:getItemById(): запрос на получение предмета с id {} от пользователя с id {}", itemId, sharerUserId);
+        return itemService.getItemById(itemId);
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<ItemDto> getAllItemsFromUser(@RequestHeader("X-Sharer-User-Id") int sharerUserId) {
+        log.info("ItemController:getAllItemsFromUser(): запрос на получение всех предметов пользователя с id {}", sharerUserId);
+        return itemService.getAllItemsFromUser(sharerUserId);
+    }
+
+    @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ItemDto> searchAvailableItems(
+            @RequestHeader("X-Sharer-User-Id") int sharerUserId,
+            @RequestParam("text") String searchString
+    ) {
+        log.info("ItemController:searchAvailableItems(): запрос на поиск доступных предметов по запросу {} от пользователя с id {}", searchString, sharerUserId);
+        return itemService.searchAvailableItems(searchString);
     }
 }

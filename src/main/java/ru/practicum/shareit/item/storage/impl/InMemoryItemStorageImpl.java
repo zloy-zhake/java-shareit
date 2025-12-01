@@ -6,7 +6,9 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @Component
 @Slf4j
@@ -25,8 +27,48 @@ public class InMemoryItemStorageImpl implements ItemStorage {
         return newItem;
     }
 
+    @Override
+    public Item getItemById(int itemId) {
+        log.info("InMemoryItemStorageImpl:getItemById(): запрос на получение предмета с id {}", itemId);
+        if (!itemMap.containsKey(itemId)) {
+            throw new NoSuchElementException("Предмета с ID " + itemId + " не существует");
+        }
+        log.info("InMemoryItemStorageImpl:getItemById(): Предмет с id {} найден", itemId);
+        return itemMap.get(itemId);
+    }
+
+    @Override
+    public Item updateItem(Item updatedItem) {
+        log.info("InMemoryItemStorageImpl:updateItem(): запрос на обновление предмета {}", updatedItem);
+        itemMap.put(updatedItem.getId(), updatedItem);
+        log.info("InMemoryItemStorageImpl:updateItem(): предмет {} обновлен", updatedItem);
+        return updatedItem;
+    }
+
+    @Override
+    public List<Item> getAllItemsFromUser(int sharerUserId) {
+        log.info("InMemoryItemStorageImpl:getAllItemsFromUser(): запрос на получение всех предметов пользователя с id {}", sharerUserId);
+        return itemMap.values().stream()
+                .filter(item -> item.getOwner() == sharerUserId)
+                .toList();
+    }
+
+    @Override
+    public List<Item> searchAvailableItems(String searchString) {
+        log.info("InMemoryItemStorageImpl:searchAvailableItems(): запрос на поиск доступных предметов по запросу {}", searchString);
+        return itemMap.values().stream()
+                .filter(item -> {
+                    return item.getName().toLowerCase().contains(searchString.toLowerCase())
+                            || item.getDescription().toLowerCase().contains(searchString.toLowerCase());
+                })
+                .toList();
+    }
+
+
     private int getNextId() {
-        currentId = currentId + 1;
+        if (!itemMap.isEmpty()) {
+            currentId = currentId + 1;
+        }
         return currentId;
     }
 }

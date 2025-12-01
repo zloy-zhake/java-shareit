@@ -33,4 +33,10 @@ public class ErrorHandler {
     public ErrorResponse handleItemNotValidException(ItemNotValidException e) {
         return new ErrorResponse("Ошибка в данных о вещи", e.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleItemDoesNotBelongToUserException(ItemDoesNotBelongToUserException e) {
+        return new ErrorResponse("Предмет не принадлежит пользователю", e.getMessage());
+    }
 }

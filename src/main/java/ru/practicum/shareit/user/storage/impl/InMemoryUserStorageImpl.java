@@ -51,13 +51,17 @@ public class InMemoryUserStorageImpl implements UserStorage {
 
     @Override
     public User updateUser(User updatedUser) {
+        log.info("InMemoryUserStorageImpl:updateUser(): запрос на обновление пользователя {}", updatedUser);
         if (emailUsedByOtherUser(updatedUser.getEmail(), updatedUser.getId())) {
             throw new DuplicatedDataException("email " + updatedUser.getEmail() + " используется другим пользователем");
         }
-        User userToUpdate = getUserById(updatedUser.getId());
-        userToUpdate.setName(updatedUser.getName());
-        userToUpdate.setEmail(updatedUser.getEmail());
-        return userToUpdate;
+//        User userToUpdate = getUserById(updatedUser.getId());
+//        userToUpdate.setName(updatedUser.getName());
+//        userToUpdate.setEmail(updatedUser.getEmail());
+//        return userToUpdate;
+        userMap.put(updatedUser.getId(), updatedUser);
+        log.info("InMemoryUserStorageImpl:updateUser(): пользователь {} обновлен", updatedUser);
+        return updatedUser;
     }
 
     @Override
@@ -68,7 +72,9 @@ public class InMemoryUserStorageImpl implements UserStorage {
     }
 
     private int getNextId() {
-        currentId = currentId + 1;
+        if (!userMap.isEmpty()) {
+            currentId = currentId + 1;
+        }
         return currentId;
     }
 

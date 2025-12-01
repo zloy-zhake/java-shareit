@@ -5,6 +5,8 @@ import ru.practicum.shareit.item.dto.NewItemRequestDto;
 import ru.practicum.shareit.item.dto.UpdateItemRequestDto;
 import ru.practicum.shareit.item.model.Item;
 
+import java.util.List;
+
 public interface ItemService {
 
     ItemDto addItem(int sharerUserId, NewItemRequestDto newItemRequestDto);
@@ -12,4 +14,10 @@ public interface ItemService {
     void validateNewItemRequestDto(NewItemRequestDto newItemRequestDto);
 
     ItemDto updateItem(int sharerUserId, int itemId, UpdateItemRequestDto updateItemRequestDto);
+
+    ItemDto getItemById(int itemId);
+
+    List<ItemDto> getAllItemsFromUser(int sharerUserId);
+
+    List<ItemDto> searchAvailableItems(String searchString);
 }
