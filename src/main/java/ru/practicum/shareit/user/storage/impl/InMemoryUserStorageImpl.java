@@ -72,10 +72,7 @@ public class InMemoryUserStorageImpl implements UserStorage {
     }
 
     private int getNextId() {
-        if (!userMap.isEmpty()) {
-            currentId = currentId + 1;
-        }
-        return currentId;
+        return currentId++;
     }
 
     private boolean emailUsedByOtherUser(String emailToCheck, int userId) {

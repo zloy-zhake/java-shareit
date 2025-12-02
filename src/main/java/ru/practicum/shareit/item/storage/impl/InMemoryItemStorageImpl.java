@@ -5,10 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Component
 @Slf4j
@@ -56,7 +53,11 @@ public class InMemoryItemStorageImpl implements ItemStorage {
     @Override
     public List<Item> searchAvailableItems(String searchString) {
         log.info("InMemoryItemStorageImpl:searchAvailableItems(): запрос на поиск доступных предметов по запросу {}", searchString);
+        if (searchString == null || searchString.isEmpty()) {
+            return new ArrayList<>();
+        }
         return itemMap.values().stream()
+                .filter(Item::isAvailable)
                 .filter(item -> {
                     return item.getName().toLowerCase().contains(searchString.toLowerCase())
                             || item.getDescription().toLowerCase().contains(searchString.toLowerCase());
@@ -64,11 +65,7 @@ public class InMemoryItemStorageImpl implements ItemStorage {
                 .toList();
     }
 
-
     private int getNextId() {
-        if (!itemMap.isEmpty()) {
-            currentId = currentId + 1;
-        }
-        return currentId;
+        return currentId++;
     }
 }
