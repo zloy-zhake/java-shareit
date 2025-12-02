@@ -8,6 +8,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.NewItemRequestDto;
 import ru.practicum.shareit.item.dto.UpdateItemRequestDto;
 import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.item.util.HttpHeaderConstants;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class ItemController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ItemDto addItem(
-            @RequestHeader("X-Sharer-User-Id") int sharerUserId,
+            @RequestHeader(HttpHeaderConstants.X_SHARER_USER_ID) int sharerUserId,
             @RequestBody NewItemRequestDto newItemRequestDto
     ) {
         log.info("ItemController:addItem(): запрос на создание нового предмета {}", newItemRequestDto);
@@ -32,7 +33,7 @@ public class ItemController {
     @PatchMapping("/{itemId}")
     @ResponseStatus(HttpStatus.OK)
     public ItemDto updateItem(
-            @RequestHeader("X-Sharer-User-Id") int sharerUserId,
+            @RequestHeader(HttpHeaderConstants.X_SHARER_USER_ID) int sharerUserId,
             @PathVariable int itemId,
             @RequestBody UpdateItemRequestDto updateItemRequestDto
     ) {
@@ -48,7 +49,7 @@ public class ItemController {
     @GetMapping("/{itemId}")
     @ResponseStatus(HttpStatus.OK)
     public ItemDto getItemById(
-            @RequestHeader("X-Sharer-User-Id") int sharerUserId,
+            @RequestHeader(HttpHeaderConstants.X_SHARER_USER_ID) int sharerUserId,
             @PathVariable int itemId
     ) {
         log.info("ItemController:getItemById(): запрос на получение предмета с id {} от пользователя с id {}", itemId, sharerUserId);
@@ -57,7 +58,7 @@ public class ItemController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ItemDto> getAllItemsFromUser(@RequestHeader("X-Sharer-User-Id") int sharerUserId) {
+    public List<ItemDto> getAllItemsFromUser(@RequestHeader(HttpHeaderConstants.X_SHARER_USER_ID) int sharerUserId) {
         log.info("ItemController:getAllItemsFromUser(): запрос на получение всех предметов пользователя с id {}", sharerUserId);
         return itemService.getAllItemsFromUser(sharerUserId);
     }
@@ -65,7 +66,7 @@ public class ItemController {
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     public List<ItemDto> searchAvailableItems(
-            @RequestHeader("X-Sharer-User-Id") int sharerUserId,
+            @RequestHeader(HttpHeaderConstants.X_SHARER_USER_ID) int sharerUserId,
             @RequestParam("text") String searchString
     ) {
         log.info("ItemController:searchAvailableItems(): запрос на поиск доступных предметов по запросу {} от пользователя с id {}", searchString, sharerUserId);
