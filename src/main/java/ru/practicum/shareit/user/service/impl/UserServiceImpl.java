@@ -1,7 +1,7 @@
 package ru.practicum.shareit.user.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.UserNotValidException;
 import ru.practicum.shareit.user.dto.NewUserRequestDto;
@@ -9,26 +9,24 @@ import ru.practicum.shareit.user.dto.UpdateUserRequestDto;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.service.UserService;
-import ru.practicum.shareit.user.storage.UserStorage;
+
+import java.util.NoSuchElementException;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
 
-    private final UserStorage userStorage;
-
-    public UserServiceImpl(
-            @Qualifier("inMemoryUserStorageImpl") UserStorage userStorage) {
-        this.userStorage = userStorage;
-    }
+    private final UserRepository userRepository;
 
     @Override
     public UserDto addUser(NewUserRequestDto newUserRequestDto) {
         log.info("UserServiceImpl:addUser(): запрос на создание нового пользователя {}", newUserRequestDto);
         validateNewUserRequestDto(newUserRequestDto);
         User newUser = UserMapper.newUserRequestDtoToUser(newUserRequestDto);
-        User createdUser = userStorage.addUser(newUser);
+        User createdUser = userRepository.save(newUser);
         log.info("UserServiceImpl:addUser(): создан новый пользователь {}", createdUser);
         return UserMapper.userToUserDto(createdUser);
     }
@@ -36,7 +34,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUserById(int userId) {
         log.info("UserServiceImpl:getUserById(): запрос на получение пользователя с id {}", userId);
-        return UserMapper.userToUserDto(userStorage.getUserById(userId));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("Пользователя с ID " + userId + " не существует"));
+        return UserMapper.userToUserDto(user);
     }
 
     @Override
@@ -55,9 +55,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateUser(int userId, UpdateUserRequestDto updateUserRequestDto) {
         log.info("UserServiceImpl:updateUser(): запрос на редактирование пользователя с id={}, новые данные: {}", userId, updateUserRequestDto);
-        User userToUpdate = userStorage.getUserById(userId);
+        User userToUpdate = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("Пользователя с ID " + userId + " не существует"));
         User updatedUser = UserMapper.updateUserFields(userToUpdate, updateUserRequestDto);
-        updatedUser = userStorage.updateUser(updatedUser);
+        updatedUser = userRepository.save(updatedUser);
         log.info("UserServiceImpl:updateUser(): пользователь с id={} отредактирован, новые данные: {}", userId, updatedUser);
         return UserMapper.userToUserDto(updatedUser);
     }
@@ -65,7 +66,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(int userId) {
         log.info("UserServiceImpl:deleteUser(): запрос на удаление пользователя с id={}", userId);
-        userStorage.deleteUser(userId);
+        userRepository.deleteById(userId);
         log.info("UserServiceImpl:deleteUser(): пользователь с id={} удален", userId);
     }
 }

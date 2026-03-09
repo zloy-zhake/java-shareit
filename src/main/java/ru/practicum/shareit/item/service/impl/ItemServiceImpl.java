@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -10,27 +11,22 @@ import ru.practicum.shareit.item.dto.NewItemRequestDto;
 import ru.practicum.shareit.item.dto.UpdateItemRequestDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.item.storage.ItemStorage;
-import ru.practicum.shareit.user.storage.UserStorage;
+import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class ItemServiceImpl implements ItemService {
 
-    private final ItemStorage itemStorage;
-    private final UserStorage userStorage;
-
-    public ItemServiceImpl(
-            @Qualifier("inMemoryItemStorageImpl") ItemStorage itemStorage,
-            @Qualifier("inMemoryUserStorageImpl") UserStorage userStorage
-    ) {
-        this.itemStorage = itemStorage;
-        this.userStorage = userStorage;
-    }
-
+    private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
 
     @Override
     public ItemDto addItem(int sharerUserId, NewItemRequestDto newItemRequestDto) {
@@ -41,10 +37,13 @@ public class ItemServiceImpl implements ItemService {
         );
         validateNewItemRequestDto(newItemRequestDto);
         Item newItem = ItemMapper.newItemRequestDtoToItem(newItemRequestDto);
-        if (userStorage.getUserById(sharerUserId) != null) {
-            newItem.setOwner(sharerUserId);
+        if (userRepository.findById(sharerUserId).isPresent()) {
+            newItem.setOwnerId(sharerUserId);
         }
-        Item createdItem = itemStorage.addItem(newItem);
+        else {
+            throw new NoSuchElementException("Пользователя с ID " + sharerUserId + " не существует");
+        }
+        Item createdItem = itemRepository.save(newItem);
         log.info("ItemServiceImpl:addItem(): создан новый предмет {}", createdItem);
         return ItemMapper.itemToItemDto(createdItem);
     }
@@ -57,7 +56,7 @@ public class ItemServiceImpl implements ItemService {
         if (newItemRequestDto.getDescription() == null || newItemRequestDto.getDescription().isBlank()) {
             throw new ItemNotValidException("Описание вещи не может быть пустым или null");
         }
-        if (newItemRequestDto.getAvailable() == null) {
+        if (newItemRequestDto.getAvailable().isEmpty()) {
             throw new ItemNotValidException("У вещи отсутствует информация о доступности для аренды");
         }
     }
@@ -71,9 +70,10 @@ public class ItemServiceImpl implements ItemService {
                 updateItemRequestDto
         );
         checkIfItemBelongsToUser(itemId, sharerUserId);
-        Item itemToUpdate = itemStorage.getItemById(itemId);
+        Item itemToUpdate = itemRepository.findById(itemId)
+                .orElseThrow(() -> new NoSuchElementException("Предмета с ID " + itemId + " не существует"));
         Item updatedItem = ItemMapper.updateItemFields(itemToUpdate, updateItemRequestDto);
-        updatedItem = itemStorage.updateItem(updatedItem);
+        updatedItem = itemRepository.save(updatedItem);
         log.info("ItemServiceImpl:updateItem(): предмет id={} отредактирован, новые данные: {}", itemId, updatedItem);
         return ItemMapper.itemToItemDto(updatedItem);
     }
@@ -81,13 +81,15 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto getItemById(int itemId) {
         log.info("ItemServiceImpl:getItemById(): запрос на получение предмета с id {}", itemId);
-        return ItemMapper.itemToItemDto(itemStorage.getItemById(itemId));
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new NoSuchElementException("Предмета с ID " + itemId + " не существует"));
+        return ItemMapper.itemToItemDto(item);
     }
 
     @Override
     public List<ItemDto> getAllItemsFromUser(int sharerUserId) {
         log.info("ItemServiceImpl:getAllItemsFromUser(): запрос на получение всех предметов пользователя с id {}", sharerUserId);
-        List<Item> itemsOfUser = itemStorage.getAllItemsFromUser(sharerUserId);
+        List<Item> itemsOfUser = itemRepository.findAllByOwnerId(sharerUserId);
         return itemsOfUser.stream()
                 .map(ItemMapper::itemToItemDto)
                 .toList();
@@ -96,15 +98,19 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> searchAvailableItems(String searchString) {
         log.info("ItemServiceImpl:searchAvailableItems(): запрос на поиск доступных предметов по запросу {}", searchString);
-        List<Item> itemSearchResults = itemStorage.searchAvailableItems(searchString);
+        if (searchString == null || searchString.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<Item> itemSearchResults = itemRepository.searchAvailableItems(searchString);
         return itemSearchResults.stream()
                 .map(ItemMapper::itemToItemDto)
                 .toList();
     }
 
-
     private void checkIfItemBelongsToUser(int itemId, int userId) {
-        int ownerId = itemStorage.getItemById(itemId).getOwner();
+        int ownerId = itemRepository.findById(itemId).
+                orElseThrow(() -> new NoSuchElementException("Предмета с ID " + itemId + " не существует"))
+                .getOwnerId();
         if (userId != ownerId) {
             throw new ItemDoesNotBelongToUserException(
                     "Предмет ID=%s не принадлежит пользователю ID=%s".formatted(itemId, userId)

@@ -46,7 +46,7 @@ public class InMemoryItemStorageImpl implements ItemStorage {
     public List<Item> getAllItemsFromUser(int sharerUserId) {
         log.info("InMemoryItemStorageImpl:getAllItemsFromUser(): запрос на получение всех предметов пользователя с id {}", sharerUserId);
         return itemMap.values().stream()
-                .filter(item -> item.getOwner() == sharerUserId)
+                .filter(item -> item.getOwnerId() == sharerUserId)
                 .toList();
     }
 
