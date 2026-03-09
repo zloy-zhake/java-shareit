@@ -2,9 +2,8 @@ package ru.practicum.shareit.item.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exceptions.ItemDoesNotBelongToUserException;
+import ru.practicum.shareit.exceptions.DoesNotBelongToUserException;
 import ru.practicum.shareit.exceptions.ItemNotValidException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.NewItemRequestDto;
@@ -13,7 +12,6 @@ import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.ArrayList;
@@ -112,7 +110,7 @@ public class ItemServiceImpl implements ItemService {
                 orElseThrow(() -> new NoSuchElementException("Предмета с ID " + itemId + " не существует"))
                 .getOwnerId();
         if (userId != ownerId) {
-            throw new ItemDoesNotBelongToUserException(
+            throw new DoesNotBelongToUserException(
                     "Предмет ID=%s не принадлежит пользователю ID=%s".formatted(itemId, userId)
             );
         }

@@ -26,7 +26,7 @@ public class ItemController {
             @RequestHeader(HttpHeaderConstants.X_SHARER_USER_ID) int sharerUserId,
             @RequestBody NewItemRequestDto newItemRequestDto
     ) {
-        log.info("ItemController:addItem(): запрос на создание нового предмета {}", newItemRequestDto);
+        log.info("ItemController:addItem(): запрос на создание нового предмета {} от пользователя с ID={}", newItemRequestDto, sharerUserId);
         return itemService.addItem(sharerUserId, newItemRequestDto);
     }
 
