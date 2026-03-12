@@ -51,4 +51,10 @@ public class ErrorHandler {
     public ErrorResponse handleItemNotAvailableException(ItemNotAvailableException e) {
         return new ErrorResponse("Вещь недоступна", e.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleCommentNotPossibleException(CommentNotPossibleException e){
+        return new ErrorResponse("Комментирование недоступно", e.getMessage());
+    }
 }

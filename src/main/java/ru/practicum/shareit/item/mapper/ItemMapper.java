@@ -1,13 +1,28 @@
 package ru.practicum.shareit.item.mapper;
 
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.NewItemRequestDto;
-import ru.practicum.shareit.item.dto.UpdateItemRequestDto;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.item.dto.*;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemMapper {
 
-    public static ItemDto itemToItemDto(Item item) {
+//    public static ItemDto itemToItemDto(Item item) {
+//        ItemDto itemDto = new ItemDto();
+//        itemDto.setId(item.getId());
+//        itemDto.setName(item.getName());
+//        itemDto.setDescription(item.getDescription());
+//        itemDto.setAvailable(item.isAvailable());
+//        itemDto.setOwner(item.getOwnerId());
+//        itemDto.setRequest(item.getRequestId());
+//        return itemDto;
+//    }
+
+    public static ItemDto itemToItemDto(Item item, Booking previousBooking, Booking nextBooking, List<Comment> comments, List<String> commentAuthorNames) {
         ItemDto itemDto = new ItemDto();
         itemDto.setId(item.getId());
         itemDto.setName(item.getName());
@@ -15,6 +30,21 @@ public class ItemMapper {
         itemDto.setAvailable(item.isAvailable());
         itemDto.setOwner(item.getOwnerId());
         itemDto.setRequest(item.getRequestId());
+        if (previousBooking != null) {
+            itemDto.setLastBooking(new BookingShortDto(
+                    previousBooking.getId(), previousBooking.getStart(),
+                    previousBooking.getEnd(), previousBooking.getBooker()));
+        }
+        if (nextBooking != null) {
+            itemDto.setNextBooking(new BookingShortDto(
+                    nextBooking.getId(), nextBooking.getStart(),
+                    nextBooking.getEnd(), nextBooking.getBooker()));
+        }
+        List<CommentDto> commentDtos = new ArrayList<>();
+        for (int i = 0; i < comments.size(); i++) {
+            commentDtos.add(CommentMapper.commentToCommentDto(comments.get(i), commentAuthorNames.get(i)));
+        }
+        itemDto.setComments(commentDtos);
         return itemDto;
     }
 

@@ -6,8 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.NewBookingRequestDto;
+import ru.practicum.shareit.booking.model.BookingStatusRequestParam;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.item.util.HttpHeaderConstants;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/bookings")
@@ -45,5 +48,25 @@ public class BookingController {
     ) {
         log.info("BookingController:getBookingById(): запрос на получение бронирования с ID={} от пользователя с ID={}", bookingId, sharerUserId);
         return bookingService.getBookingById(bookingId, sharerUserId);
+    }
+
+    @GetMapping("/owner")
+    @ResponseStatus(HttpStatus.OK)
+    public List<BookingDto> getBookingsOfOwner(
+            @RequestHeader(HttpHeaderConstants.X_SHARER_USER_ID) int sharerUserId,
+            @RequestParam(value = "state", defaultValue = "ALL") BookingStatusRequestParam state
+    ) {
+        log.info("BookingController:getBookingsOfOwner(): запрос на получение всех бронирований вещей пользователя с ID={}, state={}", sharerUserId, state);
+        return bookingService.getBookingsOfOwner(sharerUserId, state);
+    }
+
+    @GetMapping("")
+    @ResponseStatus(HttpStatus.OK)
+    public List<BookingDto> getBookingsOfBooker(
+            @RequestHeader(HttpHeaderConstants.X_SHARER_USER_ID) int sharerUserId,
+            @RequestParam(value = "state", defaultValue = "ALL") BookingStatusRequestParam state
+    ) {
+        log.info("BookingController:getBookingsOfBooker(): запрос на получение всех бронирований пользователя с ID={}, state={}", sharerUserId, state);
+        return bookingService.getBookingsOfBooker(sharerUserId, state);
     }
 }
