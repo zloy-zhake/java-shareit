@@ -51,7 +51,7 @@ public class ItemController {
             @PathVariable int itemId
     ) {
         log.info("ItemController:getItemById(): запрос на получение предмета с id {} от пользователя с id {}", itemId, sharerUserId);
-        return itemService.getItemById(itemId);
+        return itemService.getItemById(itemId, sharerUserId);
     }
 
     @GetMapping
@@ -68,7 +68,7 @@ public class ItemController {
             @RequestParam("text") String searchString
     ) {
         log.info("ItemController:searchAvailableItems(): запрос на поиск доступных предметов по запросу {} от пользователя с id {}", searchString, sharerUserId);
-        return itemService.searchAvailableItems(searchString);
+        return itemService.searchAvailableItems(searchString, sharerUserId);
     }
 
     @PostMapping("/{itemId}/comment")

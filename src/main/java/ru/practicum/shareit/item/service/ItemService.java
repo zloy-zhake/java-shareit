@@ -12,11 +12,11 @@ public interface ItemService {
 
     ItemDto updateItem(int sharerUserId, int itemId, UpdateItemRequestDto updateItemRequestDto);
 
-    ItemDto getItemById(int itemId);
+    ItemDto getItemById(int itemId, int requestingUserId);
 
     List<ItemDto> getAllItemsFromUser(int sharerUserId);
 
-    List<ItemDto> searchAvailableItems(String searchString);
+    List<ItemDto> searchAvailableItems(String searchString, int requestingUserId);
 
     CommentDto addComment(int sharerUserId, int itemId, NewCommentRequestDto newCommentRequestDto);
 }

@@ -53,7 +53,7 @@ public class ItemServiceImpl implements ItemService {
         }
         Item createdItem = itemRepository.save(newItem);
         log.info("ItemServiceImpl:addItem(): создан новый предмет {}", createdItem);
-        return createItemDto(createdItem);
+        return createItemDto(createdItem, sharerUserId);
     }
 
     @Override
@@ -83,15 +83,15 @@ public class ItemServiceImpl implements ItemService {
         Item updatedItem = ItemMapper.updateItemFields(itemToUpdate, updateItemRequestDto);
         updatedItem = itemRepository.save(updatedItem);
         log.info("ItemServiceImpl:updateItem(): предмет id={} отредактирован, новые данные: {}", itemId, updatedItem);
-        return createItemDto(updatedItem);
+        return createItemDto(updatedItem, sharerUserId);
     }
 
     @Override
-    public ItemDto getItemById(int itemId) {
+    public ItemDto getItemById(int itemId, int requestingUserId) {
         log.info("ItemServiceImpl:getItemById(): запрос на получение предмета с id {}", itemId);
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NoSuchElementException("Предмета с ID " + itemId + " не существует"));
-        return createItemDto(item);
+        return createItemDto(item, requestingUserId);
     }
 
     @Override
@@ -99,19 +99,19 @@ public class ItemServiceImpl implements ItemService {
         log.info("ItemServiceImpl:getAllItemsFromUser(): запрос на получение всех предметов пользователя с id {}", sharerUserId);
         List<Item> items = itemRepository.findAllByOwnerId(sharerUserId);
         return items.stream()
-                .map(this::createItemDto)
+                .map(item -> createItemDto(item, sharerUserId))
                 .toList();
     }
 
     @Override
-    public List<ItemDto> searchAvailableItems(String searchString) {
+    public List<ItemDto> searchAvailableItems(String searchString, int requestingUserId) {
         log.info("ItemServiceImpl:searchAvailableItems(): запрос на поиск доступных предметов по запросу {}", searchString);
         if (searchString == null || searchString.isEmpty()) {
             return new ArrayList<>();
         }
         List<Item> itemSearchResults = itemRepository.searchAvailableItems(searchString);
         return itemSearchResults.stream()
-                .map(this::createItemDto)
+                .map(item -> createItemDto(item, requestingUserId))
                 .toList();
     }
 
@@ -150,10 +150,14 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
-    private ItemDto createItemDto(Item item) {
+    private ItemDto createItemDto(Item item, int requestingUserId) {
         LocalDateTime now = LocalDateTime.now();
-        Booking lastBooking = bookingRepository.findLastBookingForItem(item.getId(), now);
-        Booking nextBooking = bookingRepository.findNextBookingForItem(item.getId(), now);
+        Booking lastBooking = null;
+        Booking nextBooking = null;
+        if (requestingUserId == item.getOwnerId()) {
+            lastBooking = bookingRepository.findLastBookingForItem(item.getId(), now);
+            nextBooking = bookingRepository.findNextBookingForItem(item.getId(), now);
+        }
         List<Comment> comments = commentRepository.findAllByItem(item.getId());
         List<String> commentAuthorNames = comments.stream()
                 .map(Comment::getAuthor)
