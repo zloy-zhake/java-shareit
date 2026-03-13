@@ -5,7 +5,7 @@ import ru.practicum.shareit.item.model.Comment;
 
 public class CommentMapper {
 
-    public static CommentDto commentToCommentDto(Comment comment, String authorName){
+    public static CommentDto commentToCommentDto(Comment comment, String authorName) {
         CommentDto commentDto = new CommentDto();
         commentDto.setId(comment.getId());
         commentDto.setText(comment.getText());

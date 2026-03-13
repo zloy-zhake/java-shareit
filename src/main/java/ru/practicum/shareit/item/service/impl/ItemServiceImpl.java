@@ -138,8 +138,8 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private void checkIfItemBelongsToUser(int itemId, int userId) {
-        int ownerId = itemRepository.findById(itemId).
-                orElseThrow(() -> new NoSuchElementException("Предмета с ID " + itemId + " не существует"))
+        int ownerId = itemRepository.findById(itemId)
+                .orElseThrow(() -> new NoSuchElementException("Предмета с ID " + itemId + " не существует"))
                 .getOwnerId();
         if (userId != ownerId) {
             throw new DoesNotBelongToUserException(
