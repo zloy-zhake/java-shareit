@@ -90,7 +90,9 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow();
         Item item = itemRepository.findById(booking.getItem()).orElseThrow();
         if (sharerUserId != booking.getBooker() && sharerUserId != item.getOwnerId()) {
-            throw new DoesNotBelongToUserException("Запрошенное бронирование с ID=" + bookingId + " никак не связано с пользователем с ID=" + sharerUserId);
+            throw new DoesNotBelongToUserException(
+                    "Запрошенное бронирование с ID=" + bookingId + " никак не связано с пользователем с ID=" + sharerUserId
+            );
         }
         User booker = userRepository.findById(booking.getBooker()).orElseThrow();
         return BookingMapper.bookingToBookingDto(booking, booker, item);
@@ -133,11 +135,13 @@ public class BookingServiceImpl implements BookingService {
         LocalDateTime now = LocalDateTime.now();
         List<Booking> bookings = switch (state) {
             case ALL -> bookingRepository.findAllByBookerOrderByStartDesc(bookerId);
-            case CURRENT -> bookingRepository.findAllByBookerAndStartBeforeAndEndAfterOrderByStartDesc(bookerId, now, now);
+            case CURRENT ->
+                    bookingRepository.findAllByBookerAndStartBeforeAndEndAfterOrderByStartDesc(bookerId, now, now);
             case PAST -> bookingRepository.findAllByBookerAndEndBeforeOrderByStartDesc(bookerId, now);
             case FUTURE -> bookingRepository.findAllByBookerAndStartAfterOrderByStartDesc(bookerId, now);
             case WAITING -> bookingRepository.findAllByBookerAndStatusOrderByStartDesc(bookerId, BookingStatus.WAITING);
-            case REJECTED -> bookingRepository.findAllByBookerAndStatusOrderByStartDesc(bookerId, BookingStatus.REJECTED);
+            case REJECTED ->
+                    bookingRepository.findAllByBookerAndStatusOrderByStartDesc(bookerId, BookingStatus.REJECTED);
         };
         return bookings.stream()
                 .map(booking -> {

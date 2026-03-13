@@ -25,7 +25,11 @@ public class BookingController {
             @RequestHeader(HttpHeaderConstants.X_SHARER_USER_ID) int sharerUserId,
             @RequestBody NewBookingRequestDto newBookingRequestDto
     ) {
-        log.info("BookingController:addBooking(): запрос на создание нового бронирования {} от пользователя с ID={}", newBookingRequestDto, sharerUserId);
+        log.info(
+                "BookingController:addBooking(): запрос на создание нового бронирования {} от пользователя с ID={}",
+                newBookingRequestDto,
+                sharerUserId
+        );
         return bookingService.addBooking(sharerUserId, newBookingRequestDto);
     }
 
@@ -36,7 +40,11 @@ public class BookingController {
             @PathVariable int bookingId,
             @RequestParam("approved") boolean isApproved
     ) {
-        log.info("BookingController:approveBooking(): запрос на подтверждение бронирования с ID={} от пользователя с ID={} approved={}", bookingId, sharerUserId, isApproved);
+        log.info("BookingController:approveBooking(): запрос на подтверждение бронирования с ID={} от пользователя с ID={} approved={}",
+                bookingId,
+                sharerUserId,
+                isApproved
+        );
         return bookingService.approveBooking(bookingId, sharerUserId, isApproved);
     }
 
@@ -46,7 +54,10 @@ public class BookingController {
             @RequestHeader(HttpHeaderConstants.X_SHARER_USER_ID) int sharerUserId,
             @PathVariable int bookingId
     ) {
-        log.info("BookingController:getBookingById(): запрос на получение бронирования с ID={} от пользователя с ID={}", bookingId, sharerUserId);
+        log.info("BookingController:getBookingById(): запрос на получение бронирования с ID={} от пользователя с ID={}",
+                bookingId,
+                sharerUserId
+        );
         return bookingService.getBookingById(bookingId, sharerUserId);
     }
 
@@ -56,7 +67,10 @@ public class BookingController {
             @RequestHeader(HttpHeaderConstants.X_SHARER_USER_ID) int sharerUserId,
             @RequestParam(value = "state", defaultValue = "ALL") BookingStatusRequestParam state
     ) {
-        log.info("BookingController:getBookingsOfOwner(): запрос на получение всех бронирований вещей пользователя с ID={}, state={}", sharerUserId, state);
+        log.info("BookingController:getBookingsOfOwner(): запрос на получение всех бронирований вещей пользователя с ID={}, state={}",
+                sharerUserId,
+                state
+        );
         return bookingService.getBookingsOfOwner(sharerUserId, state);
     }
 
@@ -66,7 +80,10 @@ public class BookingController {
             @RequestHeader(HttpHeaderConstants.X_SHARER_USER_ID) int sharerUserId,
             @RequestParam(value = "state", defaultValue = "ALL") BookingStatusRequestParam state
     ) {
-        log.info("BookingController:getBookingsOfBooker(): запрос на получение всех бронирований пользователя с ID={}, state={}", sharerUserId, state);
+        log.info("BookingController:getBookingsOfBooker(): запрос на получение всех бронирований пользователя с ID={}, state={}",
+                sharerUserId,
+                state
+        );
         return bookingService.getBookingsOfBooker(sharerUserId, state);
     }
 }

@@ -6,11 +6,9 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingItemDto;
 import ru.practicum.shareit.booking.dto.NewBookingRequestDto;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
-import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class BookingMapper {
     public static BookingDto bookingToBookingDto(Booking booking, User booker, Item item) {

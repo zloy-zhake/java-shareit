@@ -54,7 +54,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleCommentNotPossibleException(CommentNotPossibleException e){
+    public ErrorResponse handleCommentNotPossibleException(CommentNotPossibleException e) {
         return new ErrorResponse("Комментирование недоступно", e.getMessage());
     }
 }

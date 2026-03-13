@@ -1,6 +1,5 @@
 package ru.practicum.shareit.booking.dto;
 
-import jakarta.persistence.Column;
 import lombok.Data;
 import ru.practicum.shareit.booking.model.BookingStatus;
 

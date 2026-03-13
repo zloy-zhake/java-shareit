@@ -23,9 +23,7 @@ import ru.practicum.shareit.user.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -164,6 +162,6 @@ public class ItemServiceImpl implements ItemService {
                 .map(authorId -> userRepository.findById(authorId).orElseThrow())
                 .map(User::getName)
                 .toList();
-        return ItemMapper.itemToItemDto(item, lastBooking,nextBooking, comments, commentAuthorNames);
+        return ItemMapper.itemToItemDto(item, lastBooking, nextBooking, comments, commentAuthorNames);
     }
 }

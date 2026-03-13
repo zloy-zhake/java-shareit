@@ -42,10 +42,14 @@ public class InMemoryUserStorageImpl implements UserStorage {
     public void checkIfUserExists(User newUser) throws DuplicatedDataException {
         for (User user : userMap.values()) {
             if (newUser.getName().equals(user.getName())) {
-                throw new DuplicatedDataException("Пользователь с именем " + newUser.getName() + " уже имеется в базе данных");
+                throw new DuplicatedDataException(
+                        "Пользователь с именем " + newUser.getName() + " уже имеется в базе данных"
+                );
             }
             if (newUser.getEmail().equals(user.getEmail()))
-                throw new DuplicatedDataException("Пользователь с email " + newUser.getEmail() + " уже имеется в базе данных");
+                throw new DuplicatedDataException(
+                        "Пользователь с email " + newUser.getEmail() + " уже имеется в базе данных"
+                );
         }
     }
 
@@ -55,10 +59,6 @@ public class InMemoryUserStorageImpl implements UserStorage {
         if (emailUsedByOtherUser(updatedUser.getEmail(), updatedUser.getId())) {
             throw new DuplicatedDataException("email " + updatedUser.getEmail() + " используется другим пользователем");
         }
-//        User userToUpdate = getUserById(updatedUser.getId());
-//        userToUpdate.setName(updatedUser.getName());
-//        userToUpdate.setEmail(updatedUser.getEmail());
-//        return userToUpdate;
         userMap.put(updatedUser.getId(), updatedUser);
         log.info("InMemoryUserStorageImpl:updateUser(): пользователь {} обновлен", updatedUser);
         return updatedUser;

@@ -54,12 +54,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(int userId, UpdateUserRequestDto updateUserRequestDto) {
-        log.info("UserServiceImpl:updateUser(): запрос на редактирование пользователя с id={}, новые данные: {}", userId, updateUserRequestDto);
+        log.info(
+                "UserServiceImpl:updateUser(): запрос на редактирование пользователя с id={}, новые данные: {}",
+                userId,
+                updateUserRequestDto
+        );
         User userToUpdate = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("Пользователя с ID " + userId + " не существует"));
         User updatedUser = UserMapper.updateUserFields(userToUpdate, updateUserRequestDto);
         updatedUser = userRepository.save(updatedUser);
-        log.info("UserServiceImpl:updateUser(): пользователь с id={} отредактирован, новые данные: {}", userId, updatedUser);
+        log.info(
+                "UserServiceImpl:updateUser(): пользователь с id={} отредактирован, новые данные: {}",
+                userId,
+                updatedUser
+        );
         return UserMapper.userToUserDto(updatedUser);
     }
 

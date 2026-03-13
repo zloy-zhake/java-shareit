@@ -24,7 +24,11 @@ public class ItemController {
             @RequestHeader(HttpHeaderConstants.X_SHARER_USER_ID) int sharerUserId,
             @RequestBody NewItemRequestDto newItemRequestDto
     ) {
-        log.info("ItemController:addItem(): запрос на создание нового предмета {} от пользователя с ID={}", newItemRequestDto, sharerUserId);
+        log.info(
+                "ItemController:addItem(): запрос на создание нового предмета {} от пользователя с ID={}",
+                newItemRequestDto,
+                sharerUserId
+        );
         return itemService.addItem(sharerUserId, newItemRequestDto);
     }
 
@@ -50,7 +54,11 @@ public class ItemController {
             @RequestHeader(HttpHeaderConstants.X_SHARER_USER_ID) int sharerUserId,
             @PathVariable int itemId
     ) {
-        log.info("ItemController:getItemById(): запрос на получение предмета с id {} от пользователя с id {}", itemId, sharerUserId);
+        log.info(
+                "ItemController:getItemById(): запрос на получение предмета с id {} от пользователя с id {}",
+                itemId,
+                sharerUserId
+        );
         return itemService.getItemById(itemId, sharerUserId);
     }
 
@@ -67,7 +75,11 @@ public class ItemController {
             @RequestHeader(HttpHeaderConstants.X_SHARER_USER_ID) int sharerUserId,
             @RequestParam("text") String searchString
     ) {
-        log.info("ItemController:searchAvailableItems(): запрос на поиск доступных предметов по запросу {} от пользователя с id {}", searchString, sharerUserId);
+        log.info(
+                "ItemController:searchAvailableItems(): запрос на поиск доступных предметов по запросу {} от пользователя с id {}",
+                searchString,
+                sharerUserId
+        );
         return itemService.searchAvailableItems(searchString, sharerUserId);
     }
 
@@ -78,7 +90,12 @@ public class ItemController {
             @PathVariable int itemId,
             @RequestBody NewCommentRequestDto newCommentRequestDto
     ) {
-        log.info("ItemController:addComment(): запрос на добавление комментария к вещи с ID={} от пользователя с ID={}; комментарий={}", itemId, sharerUserId, newCommentRequestDto);
+        log.info(
+                "ItemController:addComment(): запрос на добавление комментария к вещи с ID={} от пользователя с ID={}; комментарий={}",
+                itemId,
+                sharerUserId,
+                newCommentRequestDto
+        );
         return itemService.addComment(sharerUserId, itemId, newCommentRequestDto);
     }
 }

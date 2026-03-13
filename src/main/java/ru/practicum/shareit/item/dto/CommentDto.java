@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item.dto;
 
-import jakarta.persistence.Column;
 import lombok.Data;
 
 import java.time.LocalDateTime;

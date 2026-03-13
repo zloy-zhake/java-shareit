@@ -44,7 +44,10 @@ public class InMemoryItemStorageImpl implements ItemStorage {
 
     @Override
     public List<Item> getAllItemsFromUser(int sharerUserId) {
-        log.info("InMemoryItemStorageImpl:getAllItemsFromUser(): запрос на получение всех предметов пользователя с id {}", sharerUserId);
+        log.info(
+                "InMemoryItemStorageImpl:getAllItemsFromUser(): запрос на получение всех предметов пользователя с id {}",
+                sharerUserId
+        );
         return itemMap.values().stream()
                 .filter(item -> item.getOwnerId() == sharerUserId)
                 .toList();
@@ -52,7 +55,10 @@ public class InMemoryItemStorageImpl implements ItemStorage {
 
     @Override
     public List<Item> searchAvailableItems(String searchString) {
-        log.info("InMemoryItemStorageImpl:searchAvailableItems(): запрос на поиск доступных предметов по запросу {}", searchString);
+        log.info(
+                "InMemoryItemStorageImpl:searchAvailableItems(): запрос на поиск доступных предметов по запросу {}",
+                searchString
+        );
         if (searchString == null || searchString.isEmpty()) {
             return new ArrayList<>();
         }
