@@ -36,7 +36,25 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ErrorResponse handleItemDoesNotBelongToUserException(ItemDoesNotBelongToUserException e) {
+    public ErrorResponse handleItemDoesNotBelongToUserException(DoesNotBelongToUserException e) {
         return new ErrorResponse("Предмет не принадлежит пользователю", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleBookingNotValidException(BookingNotValidException e) {
+        return new ErrorResponse("Ошибка в бронировании", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleItemNotAvailableException(ItemNotAvailableException e) {
+        return new ErrorResponse("Вещь недоступна", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleCommentNotPossibleException(CommentNotPossibleException e) {
+        return new ErrorResponse("Комментирование недоступно", e.getMessage());
     }
 }

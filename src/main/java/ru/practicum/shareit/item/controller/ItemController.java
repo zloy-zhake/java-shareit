@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.NewItemRequestDto;
-import ru.practicum.shareit.item.dto.UpdateItemRequestDto;
+import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.item.util.HttpHeaderConstants;
 
@@ -26,7 +24,11 @@ public class ItemController {
             @RequestHeader(HttpHeaderConstants.X_SHARER_USER_ID) int sharerUserId,
             @RequestBody NewItemRequestDto newItemRequestDto
     ) {
-        log.info("ItemController:addItem(): запрос на создание нового предмета {}", newItemRequestDto);
+        log.info(
+                "ItemController:addItem(): запрос на создание нового предмета {} от пользователя с ID={}",
+                newItemRequestDto,
+                sharerUserId
+        );
         return itemService.addItem(sharerUserId, newItemRequestDto);
     }
 
@@ -52,8 +54,12 @@ public class ItemController {
             @RequestHeader(HttpHeaderConstants.X_SHARER_USER_ID) int sharerUserId,
             @PathVariable int itemId
     ) {
-        log.info("ItemController:getItemById(): запрос на получение предмета с id {} от пользователя с id {}", itemId, sharerUserId);
-        return itemService.getItemById(itemId);
+        log.info(
+                "ItemController:getItemById(): запрос на получение предмета с id {} от пользователя с id {}",
+                itemId,
+                sharerUserId
+        );
+        return itemService.getItemById(itemId, sharerUserId);
     }
 
     @GetMapping
@@ -69,7 +75,27 @@ public class ItemController {
             @RequestHeader(HttpHeaderConstants.X_SHARER_USER_ID) int sharerUserId,
             @RequestParam("text") String searchString
     ) {
-        log.info("ItemController:searchAvailableItems(): запрос на поиск доступных предметов по запросу {} от пользователя с id {}", searchString, sharerUserId);
-        return itemService.searchAvailableItems(searchString);
+        log.info(
+                "ItemController:searchAvailableItems(): запрос на поиск доступных предметов по запросу {} от пользователя с id {}",
+                searchString,
+                sharerUserId
+        );
+        return itemService.searchAvailableItems(searchString, sharerUserId);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CommentDto addComment(
+            @RequestHeader(HttpHeaderConstants.X_SHARER_USER_ID) int sharerUserId,
+            @PathVariable int itemId,
+            @RequestBody NewCommentRequestDto newCommentRequestDto
+    ) {
+        log.info(
+                "ItemController:addComment(): запрос на добавление комментария к вещи с ID={} от пользователя с ID={}; комментарий={}",
+                itemId,
+                sharerUserId,
+                newCommentRequestDto
+        );
+        return itemService.addComment(sharerUserId, itemId, newCommentRequestDto);
     }
 }
