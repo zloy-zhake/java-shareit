@@ -9,6 +9,8 @@ import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.NewItemRequestDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
+import java.util.List;
+
 /**
  * TODO Sprint add-item-requests.
  */
@@ -28,5 +30,13 @@ public class ItemRequestController {
     ) {
         log.info("ItemRequestController:addItemRequest(): запрос на создание нового запроса вещи {}", newItemRequestDto);
         return itemRequestService.addItemRequest(requesterId, newItemRequestDto);
+    }
+
+    @GetMapping
+    public List<ItemRequestDto> getRequestsOfUser(
+            @RequestHeader(HttpHeaderConstants.X_SHARER_USER_ID) int requesterId
+    ) {
+        log.info("ItemRequestController:getRequestsOfUser(): запрос на получение списка запросов пользователя с id={}", requesterId);
+        return itemRequestService.getRequestsOfUser(requesterId);
     }
 }

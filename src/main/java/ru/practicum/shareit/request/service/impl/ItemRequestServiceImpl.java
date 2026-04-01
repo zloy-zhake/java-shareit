@@ -3,6 +3,9 @@ package ru.practicum.shareit.request.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.dto.ItemForRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.NewItemRequestDto;
 import ru.practicum.shareit.request.mapper.ItemRequestMapper;
@@ -11,6 +14,7 @@ import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +22,7 @@ import java.time.LocalDateTime;
 public class ItemRequestServiceImpl implements ItemRequestService {
 
     private final ItemRequestRepository itemRequestRepository;
+    private final ItemRepository itemRepository;
 
     @Override
     public ItemRequestDto addItemRequest(int requesterId, NewItemRequestDto newItemRequestDto) {
@@ -28,5 +33,34 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         ItemRequest createdItemRequest = itemRequestRepository.save(newItemRequest);
         log.info("ItemRequestServiceImpl:addItemRequest(): создан новый запрос вещи {}", createdItemRequest);
         return ItemRequestMapper.itemRequestToItemRequestDto(createdItemRequest);
+    }
+
+    @Override
+    public List<ItemRequestDto> getRequestsOfUser(int requesterId) {
+        log.info("ItemRequestServiceImpl:getRequestsOfUser(): запрос на получение списка запросов пользователя с id={}", requesterId);
+        List<ItemRequest> requests = itemRequestRepository.findByRequesterIdOrderByCreatedDesc(requesterId);
+        List<ItemRequestDto> requestDtos = requests.stream()
+                .map(this::convertToDtoWithItems)
+                .toList();
+        log.info("ItemRequestServiceImpl:getRequestsOfUser(): получено {} запросов", requestDtos.size());
+        return requestDtos;
+    }
+
+    private ItemRequestDto convertToDtoWithItems(ItemRequest request) {
+        ItemRequestDto dto = ItemRequestMapper.itemRequestToItemRequestDto(request);
+        List<Item> items = itemRepository.findAllByRequestId(request.getId());
+        List<ItemForRequestDto> itemDtos = items.stream()
+                .map(this::convertItemToItemForRequestDto)
+                .toList();
+        dto.setItems(itemDtos);
+        return dto;
+    }
+
+    private ItemForRequestDto convertItemToItemForRequestDto(Item item) {
+        ItemForRequestDto dto = new ItemForRequestDto();
+        dto.setId(item.getId());
+        dto.setName(item.getName());
+        dto.setOwner(item.getOwnerId());
+        return dto;
     }
 }
