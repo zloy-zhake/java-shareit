@@ -39,4 +39,12 @@ public class ItemRequestController {
         log.info("ItemRequestController:getRequestsOfUser(): запрос на получение списка запросов пользователя с id={}", requesterId);
         return itemRequestService.getRequestsOfUser(requesterId);
     }
+
+    @GetMapping("/all")
+    public List<ItemRequestDto> getAllRequests(
+            @RequestHeader(HttpHeaderConstants.X_SHARER_USER_ID) int requesterId
+    ) {
+        log.info("ItemRequestController:getAllRequests(): запрос на получение всех запросов других пользователей");
+        return itemRequestService.getAllRequests(requesterId);
+    }
 }

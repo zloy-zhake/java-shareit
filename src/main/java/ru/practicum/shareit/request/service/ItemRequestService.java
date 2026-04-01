@@ -10,4 +10,6 @@ public interface ItemRequestService {
     ItemRequestDto addItemRequest(int requesterId, NewItemRequestDto newItemRequestDto);
 
     List<ItemRequestDto> getRequestsOfUser(int requesterId);
+
+    List<ItemRequestDto> getAllRequests(int requesterId);
 }

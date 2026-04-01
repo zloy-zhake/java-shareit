@@ -46,6 +46,17 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         return requestDtos;
     }
 
+    @Override
+    public List<ItemRequestDto> getAllRequests(int requesterId) {
+        log.info("ItemRequestServiceImpl:getAllRequests(): запрос на получение всех запросов других пользователей");
+        List<ItemRequest> requests = itemRequestRepository.findAllByRequesterIdNotOrderByCreatedDesc(requesterId);
+        List<ItemRequestDto> requestDtos = requests.stream()
+                .map(this::convertToDtoWithItems)
+                .toList();
+        log.info("ItemRequestServiceImpl:getAllRequests(): получено {} запросов", requestDtos.size());
+        return requestDtos;
+    }
+
     private ItemRequestDto convertToDtoWithItems(ItemRequest request) {
         ItemRequestDto dto = ItemRequestMapper.itemRequestToItemRequestDto(request);
         List<Item> items = itemRepository.findAllByRequestId(request.getId());
