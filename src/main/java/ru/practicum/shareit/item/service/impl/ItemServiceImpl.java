@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -62,7 +63,7 @@ public class ItemServiceImpl implements ItemService {
         if (newItemRequestDto.getDescription() == null || newItemRequestDto.getDescription().isBlank()) {
             throw new ItemNotValidException("Описание вещи не может быть пустым или null");
         }
-        if (newItemRequestDto.getAvailable().isEmpty()) {
+        if (newItemRequestDto.getAvailable().isEmpty() && newItemRequestDto.getRequest() == null) {
             throw new ItemNotValidException("У вещи отсутствует информация о доступности для аренды");
         }
     }
