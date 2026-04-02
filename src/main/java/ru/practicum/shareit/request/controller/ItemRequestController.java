@@ -47,4 +47,10 @@ public class ItemRequestController {
         log.info("ItemRequestController:getAllRequests(): запрос на получение всех запросов других пользователей");
         return itemRequestService.getAllRequests(requesterId);
     }
+
+    @GetMapping("/{requestId}")
+    public ItemRequestDto getRequestById(@PathVariable int requestId) {
+        log.info("ItemRequestController:getRequestById(): запрос на получение запроса с id={}", requestId);
+        return itemRequestService.getRequestById(requestId);
+    }
 }

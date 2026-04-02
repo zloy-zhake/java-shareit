@@ -57,6 +57,16 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         return requestDtos;
     }
 
+    @Override
+    public ItemRequestDto getRequestById(int requestId) {
+        log.info("ItemRequestServiceImpl:getRequestById(): запрос на получение запроса с id={}", requestId);
+        ItemRequest request = itemRequestRepository.findById(requestId)
+                .orElseThrow(() -> new java.util.NoSuchElementException("Запрос с ID " + requestId + " не существует"));
+        ItemRequestDto dto = convertToDtoWithItems(request);
+        log.info("ItemRequestServiceImpl:getRequestById(): получен запрос с id={}", requestId);
+        return dto;
+    }
+
     private ItemRequestDto convertToDtoWithItems(ItemRequest request) {
         ItemRequestDto dto = ItemRequestMapper.itemRequestToItemRequestDto(request);
         List<Item> items = itemRepository.findAllByRequestId(request.getId());

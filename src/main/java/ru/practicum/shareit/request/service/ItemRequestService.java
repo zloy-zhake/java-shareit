@@ -12,4 +12,6 @@ public interface ItemRequestService {
     List<ItemRequestDto> getRequestsOfUser(int requesterId);
 
     List<ItemRequestDto> getAllRequests(int requesterId);
+
+    ItemRequestDto getRequestById(int requestId);
 }
