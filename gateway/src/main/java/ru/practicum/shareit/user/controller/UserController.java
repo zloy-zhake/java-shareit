@@ -1,15 +1,12 @@
 package ru.practicum.shareit.user.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import ru.practicum.shareit.user.UserClient;
 import ru.practicum.shareit.user.dto.NewUserRequestDto;
 import ru.practicum.shareit.user.dto.UpdateUserRequestDto;
@@ -37,11 +34,7 @@ public class UserController {
 
     @PatchMapping("/{userId}")
     public ResponseEntity<Object> updateUser(@PathVariable int userId, @RequestBody @Valid UpdateUserRequestDto updateUserRequestDto) {
-        log.info(
-                "UserController:updateUser(): запрос на обновление пользователя с id {}. Новые данные: {}",
-                userId,
-                updateUserRequestDto
-        );
+        log.info("UserController:updateUser(): запрос на обновление пользователя с id {}. Новые данные: {}", userId, updateUserRequestDto);
         return userClient.updateUser(userId, updateUserRequestDto);
     }
 

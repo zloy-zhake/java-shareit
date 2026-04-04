@@ -133,8 +133,7 @@ class ItemServiceIntegrationTest {
         UpdateItemRequestDto updateDto = new UpdateItemRequestDto();
         updateDto.setName("Updated Name");
 
-        assertThrows(DoesNotBelongToUserException.class,
-                () -> itemService.updateItem(testUser.getId(), item.getId(), updateDto));
+        assertThrows(DoesNotBelongToUserException.class, () -> itemService.updateItem(testUser.getId(), item.getId(), updateDto));
     }
 
     @Test
@@ -262,7 +261,6 @@ class ItemServiceIntegrationTest {
         NewCommentRequestDto commentDto = new NewCommentRequestDto();
         commentDto.setText("Great item!");
 
-        assertThrows(CommentNotPossibleException.class,
-                () -> itemService.addComment(otherUser.getId(), item.getId(), commentDto));
+        assertThrows(CommentNotPossibleException.class, () -> itemService.addComment(otherUser.getId(), item.getId(), commentDto));
     }
 }

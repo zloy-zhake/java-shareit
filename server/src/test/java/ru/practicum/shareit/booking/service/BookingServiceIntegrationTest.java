@@ -94,8 +94,7 @@ class BookingServiceIntegrationTest {
         requestDto.setEnd(LocalDateTime.now().plusDays(2));
         requestDto.setItemId(availableItem.getId());
 
-        assertThrows(ItemNotAvailableException.class,
-                () -> bookingService.addBooking(booker.getId(), requestDto));
+        assertThrows(ItemNotAvailableException.class, () -> bookingService.addBooking(booker.getId(), requestDto));
     }
 
     @Test
@@ -105,8 +104,7 @@ class BookingServiceIntegrationTest {
         requestDto.setEnd(LocalDateTime.now().plusDays(2));
         requestDto.setItemId(availableItem.getId());
 
-        assertThrows(BookingNotValidException.class,
-                () -> bookingService.addBooking(booker.getId(), requestDto));
+        assertThrows(BookingNotValidException.class, () -> bookingService.addBooking(booker.getId(), requestDto));
     }
 
     @Test
@@ -148,8 +146,7 @@ class BookingServiceIntegrationTest {
 
         BookingDto booking = bookingService.addBooking(booker.getId(), requestDto);
 
-        assertThrows(DoesNotBelongToUserException.class,
-                () -> bookingService.approveBooking(booking.getId(), booker.getId(), true));
+        assertThrows(DoesNotBelongToUserException.class, () -> bookingService.approveBooking(booking.getId(), booker.getId(), true));
     }
 
     @Test
@@ -196,8 +193,7 @@ class BookingServiceIntegrationTest {
 
         BookingDto booking = bookingService.addBooking(booker.getId(), requestDto);
 
-        assertThrows(DoesNotBelongToUserException.class,
-                () -> bookingService.getBookingById(booking.getId(), unrelatedUser.getId()));
+        assertThrows(DoesNotBelongToUserException.class, () -> bookingService.getBookingById(booking.getId(), unrelatedUser.getId()));
     }
 
     @Test

@@ -1,21 +1,17 @@
 package ru.practicum.shareit.item.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
 import ru.practicum.shareit.item.ItemClient;
-import ru.practicum.shareit.item.dto.*;
+import ru.practicum.shareit.item.dto.NewCommentRequestDto;
+import ru.practicum.shareit.item.dto.NewItemRequestDto;
+import ru.practicum.shareit.item.dto.UpdateItemRequestDto;
 import ru.practicum.shareit.item.util.HttpHeaderConstants;
-
-import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/items")

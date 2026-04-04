@@ -44,14 +44,7 @@ class BookingDtoJsonTest {
 
     @Test
     void deserialize_WithNestedObjects_ParsesCorrectly() throws Exception {
-        String jsonContent = "{"
-                + "\"id\":1,"
-                + "\"start\":\"2024-01-15T10:00:00\","
-                + "\"end\":\"2024-01-16T10:00:00\","
-                + "\"status\":\"APPROVED\","
-                + "\"item\":{\"id\":10,\"name\":\"Test Item\"},"
-                + "\"booker\":{\"id\":20}"
-                + "}";
+        String jsonContent = "{" + "\"id\":1," + "\"start\":\"2024-01-15T10:00:00\"," + "\"end\":\"2024-01-16T10:00:00\"," + "\"status\":\"APPROVED\"," + "\"item\":{\"id\":10,\"name\":\"Test Item\"}," + "\"booker\":{\"id\":20}" + "}";
 
         BookingDto result = this.json.parseObject(jsonContent);
 

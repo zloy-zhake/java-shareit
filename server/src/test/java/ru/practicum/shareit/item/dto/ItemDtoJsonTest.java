@@ -26,20 +26,10 @@ class ItemDtoJsonTest {
         dto.setOwner(100);
         dto.setRequest(5);
 
-        BookingShortDto lastBooking = new BookingShortDto(
-                10,
-                LocalDateTime.of(2024, 1, 10, 10, 0),
-                LocalDateTime.of(2024, 1, 11, 10, 0),
-                20
-        );
+        BookingShortDto lastBooking = new BookingShortDto(10, LocalDateTime.of(2024, 1, 10, 10, 0), LocalDateTime.of(2024, 1, 11, 10, 0), 20);
         dto.setLastBooking(lastBooking);
 
-        BookingShortDto nextBooking = new BookingShortDto(
-                11,
-                LocalDateTime.of(2024, 1, 20, 10, 0),
-                LocalDateTime.of(2024, 1, 21, 10, 0),
-                30
-        );
+        BookingShortDto nextBooking = new BookingShortDto(11, LocalDateTime.of(2024, 1, 20, 10, 0), LocalDateTime.of(2024, 1, 21, 10, 0), 30);
         dto.setNextBooking(nextBooking);
 
         CommentDto comment = new CommentDto();
@@ -63,13 +53,7 @@ class ItemDtoJsonTest {
 
     @Test
     void deserialize_WithAllFields_ParsesCorrectly() throws Exception {
-        String jsonContent = "{"
-                + "\"id\":1,"
-                + "\"name\":\"Laptop\","
-                + "\"description\":\"A powerful laptop\","
-                + "\"available\":true,"
-                + "\"owner\":100"
-                + "}";
+        String jsonContent = "{" + "\"id\":1," + "\"name\":\"Laptop\"," + "\"description\":\"A powerful laptop\"," + "\"available\":true," + "\"owner\":100" + "}";
 
         ItemDto result = this.json.parseObject(jsonContent);
 
@@ -82,16 +66,7 @@ class ItemDtoJsonTest {
 
     @Test
     void deserialize_WithNullBookings_ParsesCorrectly() throws Exception {
-        String jsonContent = "{"
-                + "\"id\":1,"
-                + "\"name\":\"Laptop\","
-                + "\"description\":\"A powerful laptop\","
-                + "\"available\":true,"
-                + "\"owner\":100,"
-                + "\"lastBooking\":null,"
-                + "\"nextBooking\":null,"
-                + "\"comments\":[]"
-                + "}";
+        String jsonContent = "{" + "\"id\":1," + "\"name\":\"Laptop\"," + "\"description\":\"A powerful laptop\"," + "\"available\":true," + "\"owner\":100," + "\"lastBooking\":null," + "\"nextBooking\":null," + "\"comments\":[]" + "}";
 
         ItemDto result = this.json.parseObject(jsonContent);
 
