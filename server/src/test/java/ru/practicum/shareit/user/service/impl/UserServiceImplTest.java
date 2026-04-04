@@ -37,7 +37,6 @@ class UserServiceImplTest {
     private User testUser;
     private NewUserRequestDto newUserRequestDto;
     private UpdateUserRequestDto updateUserRequestDto;
-    private UserDto expectedUserDto;
 
     @BeforeEach
     void setUp() {
@@ -54,7 +53,7 @@ class UserServiceImplTest {
         updateUserRequestDto.setName("Updated User");
         updateUserRequestDto.setEmail("updated@example.com");
 
-        expectedUserDto = new UserDto();
+        UserDto expectedUserDto = new UserDto();
         expectedUserDto.setId(1);
         expectedUserDto.setName("Test User");
         expectedUserDto.setEmail("test@example.com");
